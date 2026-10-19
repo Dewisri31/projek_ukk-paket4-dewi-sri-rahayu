@@ -1,77 +1,171 @@
 <?php
+require_once '../auth.php'; require_detail_petugas();
+?>
+<?php
 
+// Menghubungkan ke database
 include("../connection.php");
 
-$query = $conn ->query("SELECT*FROM detail_buku");
+// Mengambil data detail buku
+// sekaligus mengambil data dari tabel yang berelasi
+$query = $conn->query("
+    SELECT
+        detail_buku.id_detail,
+        detail_buku.id_admin,
+        detail_buku.id_petugas,
+        admin.nama_admin,
+        petugas.nama_petugas,
+        COALESCE(admin.nama_admin, petugas.nama_petugas, '-') AS nama_pengelola,
+        detail_buku.id_buku,
+        buku.judul,
+        detail_buku.id_kategori,
+        kategori.nama_kategori,
+        detail_buku.id_penerbit,
+        penerbit.nama_penerbit,
+        detail_buku.pengarang,
+        detail_buku.tahun_terbit,
+        detail_buku.jumlah_halaman,
+        detail_buku.jumlah_stok,
+        detail_buku.isbn
+
+    FROM detail_buku
+
+    LEFT JOIN admin ON detail_buku.id_admin = admin.id_admin
+    LEFT JOIN petugas ON detail_buku.id_petugas = petugas.id_petugas
+
+    LEFT JOIN buku
+        ON detail_buku.id_buku = buku.id_buku
+
+    LEFT JOIN kategori
+        ON detail_buku.id_kategori = kategori.id_kategori
+
+    LEFT JOIN penerbit
+        ON detail_buku.id_penerbit = penerbit.id_penerbit
+");
+
+// Mengubah hasil query menjadi array
 $result = $query->fetch_all(MYSQLI_ASSOC);
 
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
-    <head>
-        <meta charset="UTF-8">
-        <title>Detail buku</title>
-    </head>
 
-    <body>
-        <H1>DETAIL BUKU</H1>
+<head>
+<link rel="stylesheet" href="../style.css">
 
-     <a href="form.detail.php" class="tambah">
-        + Tambah Data
-    </a>
+    <meta charset="UTF-8">
 
-      <table border="1">
-            <thead>
+    <title>Detail Buku</title>
+
+</head>
+
+<body>
+<div class="page-head"><div></div><a class="btn btn-light" href="../dashboard.<?= $_SESSION['role'] ?>.php">← Kembali ke Dashboard</a></div>
+
+    <h1>DETAIL BUKU</h1>
+    <p class="muted">Admin dan Petugas dapat melakukan CRUD detail buku.</p>
+    <?php if (isset($_GET['pesan'])): ?>
+        <div class="success"><?= htmlspecialchars($_GET['pesan']) ?></div>
+    <?php endif; ?>
+
+    <a class="btn" href="form.detail.php">+ Tambah Detail Buku</a>
+
+    <br><br>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+
+        <thead>
+
+            <tr>
+
+                <th>ID DETAIL</th>
+                <th>PENGELOLA</th>
+                <th>BUKU</th>
+                <th>KATEGORI</th>
+                <th>PENERBIT</th>
+                <th>PENGARANG</th>
+                <th>TAHUN TERBIT</th>
+                <th>JUMLAH HALAMAN</th>
+                <th>JUMLAH STOK</th>
+                <th>ISBN</th>
+                <th>AKSI</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <?php foreach ($result as $d): ?>
+
                 <tr>
-                    <th>ID DETAIL</th>
-                    <th>ID KATEGORI</th>
-                    <th>ID PENERBIT</th>
-                    <th>PENGARANG</th>
-                    <th>TAHUN TERBIT</th>
-                    <th>JUMLAH HALAMAN</th>
-                    <th>JUMLAH STOK</th>
-                    <th>ISBN</th>
-                    <th>AKSI</th>
-                </tr>
-            </thead>
 
-            <tbody>
-                <?php foreach($result as $d): ?>
+                    <td>
+                        <?= $d['id_detail']; ?>
+                    </td>
 
-                <tr>
-                    <td><?=$d['id_detailb']; ?></td>
-                    <td><?=$d['id_kategori']; ?></td>
-                    <td><?=$d['id_penerbit']; ?></td>
-                    <td><?=$d['pengarang']; ?></td>  
-                    <td><?=$d['tahun_terbit']; ?></td>
-                    <td><?=$d['jumlah_halaman']; ?></td>
-                    <td><?=$d['jumlah_stok']; ?></td>
-                    <td><?=$d['isbn']; ?></td>
-                     <td>
+                    <td>
+                        <?= htmlspecialchars($d['nama_pengelola']); ?>
+                    </td>
 
-                    <a href="edit.detail.php?id_detailb=<?= $d['id_detailb']; ?>">
-                        <button>Edit</button>
-                    </a>
+                    <td>
+                        <?= $d['judul']; ?>
+                    </td>
 
-                    <a href="hapus.detail.php?id_detailb=<?= $d['id_detailb']; ?>"
-                       onclick="return confirm('Yakin ingin menghapus data ini?')">
+                    <td>
+                        <?= $d['nama_kategori']; ?>
+                    </td>
 
-                        <button>Hapus</button>
+                    <td>
+                        <?= $d['nama_penerbit']; ?>
+                    </td>
 
-                    </a>
+                    <td>
+                        <?= $d['pengarang']; ?>
+                    </td>
+
+                    <td>
+                        <?= $d['tahun_terbit']; ?>
+                    </td>
+
+                    <td>
+                        <?= $d['jumlah_halaman']; ?>
+                    </td>
+
+                    <td>
+                        <?= $d['jumlah_stok']; ?>
+                    </td>
+
+                    <td>
+                        <?= $d['isbn']; ?>
+                    </td>
+
+                    <td>
+
+                        <a href="edit.detail.php?id_detail=<?= $d['id_detail']; ?>">
+                            Edit
+                        </a>
+
+                        |
+
+                        <a
+                            href="hapus.detail.php?id_detail=<?= $d['id_detail']; ?>"
+                            onclick="return confirm('Yakin ingin menghapus data ini?')"
+                        >
+                            Hapus
+                        </a>
 
                     </td>
 
+                </tr>
 
-                </tr> 
-                
-                <?php endforeach; ?>
-            </tbody>
+            <?php endforeach; ?>
 
-        </table>
-        <div class="footer">
-            DEWI SRI RAHAYU
-        </div>
-    </body>
-    </html>
+        </tbody>
+
+    </table>
+
+</body>
+
+</html>

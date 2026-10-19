@@ -1,30 +1,70 @@
-<html>
-    <head>
-         <H1>Tambah data petugas</H1>
-    </head>    
-        <body> 
-        <form action="tambah.petugas.php" method="POST">
-            <label>ID PETUGAS</label>
-            <input type="number" name="id_petugas">
-            <br><br>
+<!DOCTYPE html>
+<html lang="id">
 
-            <label>NAMA ADMIN</label>
-            <input type="text" name="nama_petugas">
-            <br><br>
+<head>
+<link rel="stylesheet" href="../style.css">
+    <meta charset="UTF-8">
+    <title>Tambah Data Petugas</title>
+</head>
 
-            <label>USERNAME</label>
-            <input type="text" name="username">
-            <br><br>
+<body>
+<div class="page-head"><div><h1>📝 Form Petugas</h1><p class="muted">Lengkapi data dengan benar.</p></div><a class="btn btn-light" href="../dashboard.admin.php">← Kembali ke Dashboard</a></div>
 
-            <label>PASSWORD</label>
-            <input type="number" name="password">
-            <br><br>
+    <h1>Tambah Data Petugas</h1>
 
-           <button type="submit">simpan</button>
-           <button type="reset">reset</button>
-           <a href="tampil.petugas.php">
-             <button type="button">kembali</button>
-           </a>
-        </form>
-        </body>
+    <form action="tambah.petugas.php" method="POST">
+
+        <label>ID PETUGAS</label>
+        <br>
+        <input type="number" name="id_petugas" required>
+
+        <br><br>
+
+
+        <label>ID ADMIN</label>
+        <br>
+        <input type="number" name="id_admin" required>
+
+        <br><br>
+
+
+        <label>NAMA PETUGAS</label>
+        <br>
+        <input type="text" name="nama_petugas" required>
+
+        <br><br>
+
+
+        <label>USERNAME</label>
+        <br>
+        <input type="text" name="username" required>
+
+        <br><br>
+
+
+        <label>PASSWORD</label>
+        <br>
+        <input type="text" name="password" required>
+
+        <br><br>
+
+
+        <button type="submit">
+            Simpan
+        </button>
+
+        <button type="reset">
+            Reset
+        </button>
+
+        <a href="tampil.petugas.php">
+            <button type="button">
+                Kembali
+            </button>
+        </a>
+
+    </form>
+
+</body>
+
 </html>

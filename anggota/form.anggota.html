@@ -1,43 +1,99 @@
-<html>
-    <head>
-         <H1>Tambah data anggota</H1>
-    </head>    
-        <body> 
-        <form action="tambah.anggota.php" method="POST">
-            <label>ID ANGGOTA</label>
-            <input type="number" name="id_anggota">
-            <br><br>
+<!DOCTYPE html>
+<html lang="id">
 
-            <label>NAMA ANGGOTA</label>
-            <input type="text" name="nama_anggota">
-            <br><br>
+<head>
+<link rel="stylesheet" href="../style.css">
+    <meta charset="UTF-8">
+    <title>Tambah Data Anggota</title>
+</head>
 
-            <label>JENIS KELAMIN</label>
-            <input type="text" name="jenis_kelamin">
-            <br><br>
+<body>
+<div class="page-head"><div><h1>📝 Form Anggota</h1><p class="muted">Lengkapi data dengan benar.</p></div><a class="btn btn-light" href="../dashboard.admin.php">← Kembali ke Dashboard</a></div>
 
-            <label>TEMPAT LAHIR</label>
-            <input type="text" name="tempat_lahir">
-            <br><br>
+    <h1>Tambah Data Anggota</h1>
 
-            <label>TANGGAL LAHIR</label>
-            <input type="date" name="tanggal_lahir">
-            <br><br>
+    <form action="tambah.anggota.php" method="POST">
 
-            <label>TELPON</label>
-            <input type="number" name="telpon">
-            <br><br>
-            
-            <label>ALAMAT</label>
-            <input type="text" name="alamat">
-            <br><br>
+        <label>ID ANGGOTA</label>
+        <br>
+        <input type="number" name="id_anggota" required>
 
-          
-           <button type="submit">simpan</button>
-           <button type="reset">reset</button>
-           <a href="tampil.anggota.php">
-             <button type="button">kembali</button>
-           </a>
-        </form>
-        </body>
+        <br><br>
+
+        <label>ID ADMIN</label>
+        <br>
+        <input type="number" name="id_admin" required>
+
+        <br><br>
+
+        <label>NAMA ANGGOTA</label>
+        <br>
+        <input type="text" name="nama_anggota" required>
+
+        <br><br>
+
+        <label>JENIS KELAMIN</label>
+        <br>
+        <select name="jenis_kelamin" required>
+            <option value="">-- Pilih --</option>
+            <option value="pria">Pria</option>
+            <option value="wanita">Wanita</option>
+        </select>
+
+        <br><br>
+
+        <label>TEMPAT LAHIR</label>
+        <br>
+        <input type="text" name="tempat_lahir" required>
+
+        <br><br>
+
+        <label>TANGGAL LAHIR</label>
+        <br>
+        <input type="date" name="tanggal_lahir" required>
+
+        <br><br>
+
+        <label>TELPON</label>
+        <br>
+        <input type="text" name="telpon" required>
+
+        <br><br>
+
+        <label>ALAMAT</label>
+        <br>
+        <input type="text" name="alamat" required>
+
+        <br><br>
+
+        <label>USERNAME LOGIN</label>
+        <br>
+        <input type="text" name="username" required>
+
+        <br><br>
+
+        <label>PASSWORD LOGIN</label>
+        <br>
+        <input type="password" name="password" required>
+
+        <br><br>
+
+        <button type="submit">
+            Simpan
+        </button>
+
+        <button type="reset">
+            Reset
+        </button>
+
+        <a href="tampil.anggota.php">
+            <button type="button">
+                Kembali
+            </button>
+        </a>
+
+    </form>
+
+</body>
+
 </html>

@@ -1,38 +1,63 @@
 <?php
+require_once '../auth.php'; require_admin();
+?>
+<?php
 
+// Menghubungkan dengan database
 include("../connection.php");
 
-$id = $_GET['id_petugas'];
+// Mengambil ID petugas dari URL
+$id_petugas = $_GET['id_petugas'] ?? null;
 
-$query = $conn->query("SELECT * FROM petugas WHERE id_petugas = '$id'");
-
-$petugas = $query->fetch_assoc();
-
+// Jika form disubmit (proses update data)
 if (isset($_POST['update'])) {
 
+    $id_petugas   = $_POST['id_petugas'];
+    $id_admin=current_user_id();
     $nama_petugas = $_POST['nama_petugas'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username     = $_POST['username'];
+    $password     = $_POST['password'];
 
-    $sql = "UPDATE petugas SET
+    // Update data ke database
+    $conn->query("
+        UPDATE petugas 
+        SET 
+            id_admin = '$id_admin',
             nama_petugas = '$nama_petugas',
             username = '$username',
             password = '$password'
-            WHERE id_petugas = '$id'";
+        WHERE id_petugas = '$id_petugas'
+    ");
 
-    if ($conn->query($sql) === TRUE) {
+    // Redirect kembali ke halaman daftar petugas
+    header("Location: tampil.petugas.php");
+    exit;
 
-        echo "<script>
-                alert('Data berhasil diubah');
-                window.location='tampil.petugas.php';
-              </script>";
-        exit;
-
-    } else {
-
-        echo "Gagal mengubah data: " . $conn->error;
-    }
 }
+
+// Mengambil data petugas berdasarkan ID
+$query = $conn->query("
+    SELECT
+        petugas.id_petugas,
+        petugas.id_admin,
+        admin.nama_admin,
+        petugas.nama_petugas,
+        petugas.username,
+        petugas.password
+
+    FROM petugas
+
+    LEFT JOIN admin
+        ON petugas.id_admin = admin.id_admin
+
+    WHERE petugas.id_petugas = '$id_petugas'
+");
+
+$petugas = $query->fetch_assoc();
+
+// Mengambil semua data admin untuk pilihan dropdown
+$query_admin = $conn->query("SELECT * FROM admin");
+$admins = $query_admin->fetch_all(MYSQLI_ASSOC);
 
 ?>
 
@@ -40,58 +65,78 @@ if (isset($_POST['update'])) {
 <html lang="id">
 
 <head>
+<link rel="stylesheet" href="../style.css">
+
     <meta charset="UTF-8">
+
     <title>Edit Data Petugas</title>
+
 </head>
 
 <body>
+<div class="page-head"><div><h1>📝 Edit Petugas</h1><p class="muted">Lengkapi data dengan benar.</p></div><a class="btn btn-light" href="<?='../dashboard.'.($_SESSION['role']??'').'.php'?>">← Kembali ke Dashboard</a></div>
 
-<h1>Edit Data Petugas</h1>
+    <h1>EDIT DATA PETUGAS</h1>
 
-<form method="POST">
-
-    <label>ID Petugas</label>
-    <br>
-    <input type="text"
-           value="<?= $petugas['id_petugas']; ?>"
-           readonly>
+    <a href="tampil.petugas.php">
+        &laquo; Kembali
+    </a>
 
     <br><br>
 
-    <label>Nama Petugas</label>
-    <br>
-    <input type="text"
-           name="nama_petugas"
-           value="<?= $petugas['nama_petugas']; ?>"
-           required>
+    <form action="" method="POST">
 
-    <br><br>
+        <table border="0" cellpadding="8" cellspacing="0">
 
-    <label>Username</label>
-    <br>
-    <input type="text"
-           name="username"
-           value="<?= $petugas['username']; ?>"
-           required>
+            <tr>
+                <td>ID PETUGAS</td>
+                <td>:</td>
+                <td>
+                    <input type="text" value="<?= $petugas['id_petugas']; ?>" disabled>
+                    <input type="hidden" name="id_petugas" value="<?= $petugas['id_petugas']; ?>">
+                </td>
+            </tr>
 
-    <br><br>
+            <tr><td>AKUN PENGELOLA</td><td>:</td><td><input value="<?= htmlspecialchars(current_user_label()) ?>" readonly></td></tr>
 
-    <label>Password</label>
-    <br>
-    <input type="text"
-           name="password"
-           value="<?= $petugas['password']; ?>"
-           required>
+            <tr>
+                <td>NAMA PETUGAS</td>
+                <td>:</td>
+                <td>
+                    <input type="text" name="nama_petugas" value="<?= $petugas['nama_petugas']; ?>" required>
+                </td>
+            </tr>
 
-    <br><br>
+            <tr>
+                <td>USERNAME</td>
+                <td>:</td>
+                <td>
+                    <input type="text" name="username" value="<?= $petugas['username']; ?>" required>
+                </td>
+            </tr>
 
-    <button type="submit" name="update">
-        Simpan Perubahan
-    </button>
+            <tr>
+                <td>PASSWORD</td>
+                <td>:</td>
+                <td>
+                    <input type="text" name="password" value="<?= $petugas['password']; ?>" required>
+                </td>
+            </tr>
 
-    <a href="tampil.petugas.php">Batal</a>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <button type="submit" name="update">
+                        Simpan Perubahan
+                    </button>
+                </td>
+            </tr>
 
-</form>
+        </table>
+
+    </form>
 
 </body>
+
 </html>

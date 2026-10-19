@@ -1,66 +1,91 @@
 <?php
 
-include("../connection.php");
+require_once '../auth.php'; require_admin();
+include '../connection.php';
 
-$query = $conn ->query("SELECT*FROM admin");
-$result = $query->fetch_all(MYSQLI_ASSOC);
+// Mengambil semua data admin
+$data = mysqli_query($conn, "
+    SELECT *
+    FROM admin
+    ORDER BY id_admin DESC
+");
 
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
-    <head>
-        <meta charset="UTF-8">
-        <title>Data admin</title>
-    </head>
+<html>
+<head>
+<link rel="stylesheet" href="../style.css">
+    <title>Data Admin</title>
+</head>
 
-    <body>
-        <H1>ADMIN</H1>
+<body>
+<div class="page-head"><div></div><a class="btn btn-light" href="../dashboard.<?= $_SESSION['role'] ?>.php">← Kembali ke Dashboard</a></div>
 
-     <a href="form.admin.html" class="tambah">
-        + Tambah Data
-    </a>
+<h2>Data Admin</h2>
 
-      <table border="1">
-            <thead>
-                <tr>
-                    <th>ID ADMIN</th>
-                    <th>NAMA ADMIN</th>
-                    <th>USERNAME</th>
-                    <th>PASSWORD</th>
-                    <th>AKSI</th>
-                </tr>
-            </thead>
+<a href="form.admin.html">
+    Tambah Admin
+</a>
 
-            <tbody>
-                <?php foreach($result as $ad): ?>
+<br><br>
 
-                <tr>
-                    <td><?=$ad['id_admin']; ?></td>
-                    <td><?=$ad['nama_admin']; ?></td>
-                    <td><?=$ad['username']; ?></td>
-                    <td><?=$ad['password']; ?></td>
-                    <td>
-                    <a href="edit.admin.php?id_admin=<?= $ad['id_admin']; ?>">
-                        <button>Edit</button>
-                    </a>
+<table border="1" cellpadding="8" cellspacing="0">
 
-                    <a href="hapus.admin.php?id_admin=<?= $ad['id_admin']; ?>"
-                       onclick="return confirm('Yakin ingin menghapus data ini?')">
+    <tr>
+        <th>ID Admin</th>
+        <th>Nama Admin</th>
+        <th>USERNAME</th>
+        <th>PASSWORD</th>
+        <th>Aksi</th>
+    </tr>
 
-                        <button>Hapus</button>
+    <?php while ($row = mysqli_fetch_assoc($data)) { ?>
 
-                    </a>
+    <tr>
+
+        <td>
+            <?php echo $row['id_admin']; ?>
+        </td>
+
+        <td>
+            <?php echo $row['nama_admin']; ?>
+        </td>
+        <td>
+                        <?= $row['username']; ?>
                     </td>
 
-                </tr> 
-                
-                <?php endforeach; ?>
-            </tbody>
+                    <td>
+                        <?= $row['password']; ?>
+                    </td>
+        <td>
 
-        </table>
-        <div class="footer">
-            DEWI SRI RAHAYU
-        </div>
-    </body>
-    </html>
+            <a href="edit.admin.php?id_admin=<?php
+                echo $row['id_admin'];
+            ?>">
+                Edit
+            </a>
+
+            |
+
+            <a
+                href="hapus.admin.php?id_admin=<?php
+                    echo $row['id_admin'];
+                ?>"
+                onclick="return confirm(
+                    'Yakin ingin menghapus admin ini?'
+                )"
+            >
+                Hapus
+            </a>
+
+        </td>
+
+    </tr>
+
+    <?php } ?>
+
+</table>
+
+</body>
+</html>

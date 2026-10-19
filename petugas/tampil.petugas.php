@@ -1,66 +1,131 @@
 <?php
+require_once '../auth.php'; require_admin();
+?>
+<?php
 
+// Menghubungkan dengan database
 include("../connection.php");
 
-$query = $conn ->query("SELECT*FROM petugas");
+// Mengambil data petugas dan nama admin
+$query = $conn->query("
+    SELECT
+        petugas.id_petugas,
+        petugas.id_admin,
+        admin.nama_admin,
+        petugas.nama_petugas,
+        petugas.username,
+        petugas.password
+
+    FROM petugas
+
+    LEFT JOIN admin
+        ON petugas.id_admin = admin.id_admin
+");
+
+// Mengubah hasil query menjadi array
 $result = $query->fetch_all(MYSQLI_ASSOC);
 
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
-    <head>
-        <meta charset="UTF-8">
-        <title>Data petugas</title>
-    </head>
 
-    <body>
-        <H1>PETUGAS</H1>
+<head>
+<link rel="stylesheet" href="../style.css">
 
-      <a href="form.petugas.html" class="tambah">
+    <meta charset="UTF-8">
+
+    <title>Data Petugas</title>
+
+</head>
+
+<body>
+<div class="page-head"><div></div><a class="btn btn-light" href="../dashboard.<?= $_SESSION['role'] ?>.php">← Kembali ke Dashboard</a></div>
+
+    <h1>PETUGAS</h1>
+
+    <a href="form.petugas.html">
         + Tambah Data
-    </a>  
+    </a>
+
+    <br><br>
 
 
-      <table border="1">
-            <thead>
+    <table border="1" cellpadding="8" cellspacing="0">
+
+        <thead>
+
+            <tr>
+
+                <th>ID PETUGAS</th>
+                <th>ID ADMIN</th>
+                <th>NAMA ADMIN</th>
+                <th>NAMA PETUGAS</th>
+                <th>USERNAME</th>
+                <th>PASSWORD</th>
+                <th>AKSI</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            <?php foreach ($result as $p): ?>
+
                 <tr>
-                    <th>ID PETUGAS</th>
-                    <th>NAMA PETUGAS</th>
-                    <th>USERNAME</th>
-                    <th>PASSWORD</th>
-                    <th>AKSI</th>
-                </tr>
-            </thead>
 
-            <tbody>
-                <?php foreach($result as $ap): ?>
-
-                <tr>
-                    <td><?=$ap['id_petugas']; ?></td>
-                    <td><?=$ap['nama_petugas']; ?></td>
-                    <td><?=$ap['username']; ?></td>
-                    <td><?=$ap['password']; ?></td>
                     <td>
-                    <a href="edit.petugas.php?id_petugas=<?= $ap['id_petugas']; ?>">
-                        <button>Edit</button>
-                    </a>
+                        <?= $p['id_petugas']; ?>
+                    </td>
 
-                    <a href="hapus.petugas.php?id_petugas=<?= $ap['id_petugas']; ?>"
-                       onclick="return confirm('Yakin ingin menghapus data ini?')">
+                    <td>
+                        <?= $p['id_admin']; ?>
+                    </td>
 
-                        <button>Hapus</button>
+                    <td>
+                        <?= $p['nama_admin']; ?>
+                    </td>
 
-                    </a>
-                    </td>                   
-                </tr> 
-                
-                <?php endforeach; ?>
-            </tbody>
+                    <td>
+                        <?= $p['nama_petugas']; ?>
+                    </td>
 
-        </table>
-        <div class="footer">
-            DEWI SRI RAHAYU
-        </div>
-    </body>
-    </html>
+                    <td>
+                        <?= $p['username']; ?>
+                    </td>
+
+                    <td>
+                        <?= $p['password']; ?>
+                    </td>
+
+                    <td>
+
+      <a href="edit.petugas.php?id_petugas=<?= $p['id_petugas']; ?>">
+    <button type="button">Edit</button>
+</a>
+
+
+                        <a
+                            href="hapus.petugas.php?id_petugas=<?= $p['id_petugas']; ?>"
+                            onclick="return confirm('Yakin ingin menghapus data ini?')"
+                        >
+                            <button>
+                                Hapus
+                            </button>
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            <?php endforeach; ?>
+
+        </tbody>
+
+    </table>
+
+</body>
+
+</html>

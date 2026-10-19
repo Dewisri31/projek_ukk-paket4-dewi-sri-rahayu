@@ -1,161 +1,303 @@
+
 <?php
+require_once '../auth.php';
+require_staff();
+require_once '../connection.php';
 
-include("../connection.php");
+// Ambil dan validasi ID anggota
+$id = filter_input(INPUT_GET, 'id_anggota', FILTER_VALIDATE_INT);
 
-$id = $_GET['id_anggota'];
+if (!$id || $id <= 0) {
+    die("ID anggota tidak valid.");
+}
 
-if (isset($_POST['update'])) {
+$pesan_error = "";
 
-    $nama_anggota  = $_POST['nama_anggota'];
-    $jenis_kelamin = $_POST['jenis_kelamin'];
-    $tempat_lahir  = $_POST['tempat_lahir'];
-    $tanggal_lahir = $_POST['tanggal_lahir'];
-    $telpon        = $_POST['telpon'];
-    $alamat        = $_POST['alamat'];
+// Proses penyimpanan perubahan
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
 
-    $sql = "UPDATE anggota SET
-            nama_anggota = '$nama_anggota',
-            jenis_kelamin = '$jenis_kelamin',
-            tempat_lahir = '$tempat_lahir',
-            tanggal_lahir = '$tanggal_lahir',
-            telpon = '$telpon',
-            alamat = '$alamat'
-            WHERE id_anggota = '$id'";
+    $nama_anggota  = trim($_POST['nama_anggota'] ?? '');
+    $jenis_kelamin = trim($_POST['jenis_kelamin'] ?? '');
+    $tempat_lahir  = trim($_POST['tempat_lahir'] ?? '');
+    $tanggal_lahir = trim($_POST['tanggal_lahir'] ?? '');
+    $telpon        = trim($_POST['telpon'] ?? '');
+    $alamat        = trim($_POST['alamat'] ?? '');
+    $username      = trim($_POST['username'] ?? '');
+    $password      = $_POST['password'] ?? '';
 
-    if ($conn->query($sql) === TRUE) {
-
-        header("Location: tampil.anggota.php");
-        exit;
-
+    // Validasi input
+    if (
+        $nama_anggota === '' ||
+        !in_array($jenis_kelamin, ['pria', 'wanita'], true) ||
+        $tempat_lahir === '' ||
+        $tanggal_lahir === '' ||
+        $telpon === '' ||
+        $alamat === '' ||
+        $username === '' ||
+        $password === ''
+    ) {
+        $pesan_error = "Semua kolom wajib diisi dengan benar.";
     } else {
 
-        echo "Gagal mengubah data: " . $conn->error;
+        // Ambil ID pengelola sesuai sesi login
+        $id_admin = null;
+        $id_petugas = null;
+
+        if (role() === 'admin') {
+            $id_admin = (int) current_user_id();
+        } elseif (role() === 'petugas') {
+            $id_petugas = (int) current_user_id();
+        }
+
+        /*
+         * Sesuaikan kolom pengelola berdasarkan role.
+         * Kolom yang bukan milik role aktif dibuat NULL.
+         */
+        if ($id_admin !== null) {
+
+            $stmt = $conn->prepare("
+                UPDATE anggota
+                SET id_admin = ?,
+                    id_petugas = NULL,
+                    nama_anggota = ?,
+                    jenis_kelamin = ?,
+                    tempat_lahir = ?,
+                    tanggal_lahir = ?,
+                    telpon = ?,
+                    alamat = ?,
+                    username = ?,
+                    password = ?
+                WHERE id_anggota = ?
+            ");
+
+            if (!$stmt) {
+                die("Gagal menyiapkan query: " . $conn->error);
+            }
+
+            $stmt->bind_param(
+                "issssssssi",
+                $id_admin,
+                $nama_anggota,
+                $jenis_kelamin,
+                $tempat_lahir,
+                $tanggal_lahir,
+                $telpon,
+                $alamat,
+                $username,
+                $password,
+                $id
+            );
+
+        } elseif ($id_petugas !== null) {
+
+            $stmt = $conn->prepare("
+                UPDATE anggota
+                SET id_admin = NULL,
+                    id_petugas = ?,
+                    nama_anggota = ?,
+                    jenis_kelamin = ?,
+                    tempat_lahir = ?,
+                    tanggal_lahir = ?,
+                    telpon = ?,
+                    alamat = ?,
+                    username = ?,
+                    password = ?
+                WHERE id_anggota = ?
+            ");
+
+            if (!$stmt) {
+                die("Gagal menyiapkan query: " . $conn->error);
+            }
+
+            $stmt->bind_param(
+                "issssssssi",
+                $id_petugas,
+                $nama_anggota,
+                $jenis_kelamin,
+                $tempat_lahir,
+                $tanggal_lahir,
+                $telpon,
+                $alamat,
+                $username,
+                $password,
+                $id
+            );
+
+        } else {
+            die("Role pengelola tidak valid.");
+        }
+
+        if ($stmt->execute()) {
+            $stmt->close();
+            header("Location: tampil.anggota.php?success=edit");
+            exit;
+        } else {
+            $pesan_error = "Gagal mengubah data: " . $stmt->error;
+            $stmt->close();
+        }
     }
 }
 
-$query = $conn->query(
-    "SELECT * FROM anggota WHERE id_anggota = '$id'"
-);
+// Ambil data anggota untuk ditampilkan di form
+$stmtAnggota = $conn->prepare("
+    SELECT *
+    FROM anggota
+    WHERE id_anggota = ?
+    LIMIT 1
+");
 
-$anggota = $query->fetch_assoc();
+$stmtAnggota->bind_param("i", $id);
+$stmtAnggota->execute();
 
+$result = $stmtAnggota->get_result();
+$anggota = $result->fetch_assoc();
+
+$stmtAnggota->close();
+
+if (!$anggota) {
+    die("Data anggota tidak ditemukan.");
+}
+
+function e($value) {
+    return htmlspecialchars((string)($value ?? ''), ENT_QUOTES, 'UTF-8');
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Data Anggota</title>
+    <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
 
-    <h1>Edit Data Anggota</h1>
+<div class="page-head">
+    <div>
+        <h1>✏️ Edit Data Anggota</h1>
+        <p class="muted">Perbarui data anggota dengan benar.</p>
+    </div>
 
-    <form method="POST">
+    <a class="btn btn-light"
+       href="../dashboard.<?= e($_SESSION['role'] ?? 'admin') ?>.php">
+        ← Kembali ke Dashboard
+    </a>
+</div>
 
-        <label>ID Anggota</label>
-        <br>
+<?php if ($pesan_error !== ''): ?>
+    <div class="alert alert-danger">
+        <?= e($pesan_error) ?>
+    </div>
+<?php endif; ?>
 
-        <input
-            type="text"
-            name="id_anggota"
-            value="<?= $anggota['id_anggota']; ?>"
-            readonly
-        >
+<form method="POST"
+      action="edit.anggota.php?id_anggota=<?= (int)$id ?>">
 
-        <br><br>
+    <label>ID ANGGOTA</label><br>
+    <input
+        type="number"
+        value="<?= (int)$anggota['id_anggota'] ?>"
+        readonly
+    >
+    <br><br>
 
-        <label>Nama Anggota</label>
-        <br>
+    <label>Akun Pengelola</label><br>
+    <input
+        type="text"
+        value="<?= e(current_user_label()) ?>"
+        readonly
+    >
+    <br><br>
 
-        <input
-            type="text"
-            name="nama_anggota"
-            value="<?= $anggota['nama_anggota']; ?>"
-            required
-        >
+    <label>NAMA ANGGOTA</label><br>
+    <input
+        type="text"
+        name="nama_anggota"
+        value="<?= e($anggota['nama_anggota']) ?>"
+        maxlength="100"
+        required
+    >
+    <br><br>
 
-        <br><br>
+    <label>JENIS KELAMIN</label><br>
+    <select name="jenis_kelamin" required>
+        <option value="">-- Pilih Jenis Kelamin --</option>
+        <option value="pria"
+            <?= strtolower($anggota['jenis_kelamin'] ?? '') === 'pria' ? 'selected' : '' ?>>
+            Pria
+        </option>
+        <option value="wanita"
+            <?= strtolower($anggota['jenis_kelamin'] ?? '') === 'wanita' ? 'selected' : '' ?>>
+            Wanita
+        </option>
+    </select>
+    <br><br>
 
-        <label>Jenis Kelamin</label>
-        <br>
+    <label>TEMPAT LAHIR</label><br>
+    <input
+        type="text"
+        name="tempat_lahir"
+        value="<?= e($anggota['tempat_lahir']) ?>"
+        required
+    >
+    <br><br>
 
-        <select name="jenis_kelamin" required>
+    <label>TANGGAL LAHIR</label><br>
+    <input
+        type="date"
+        name="tanggal_lahir"
+        value="<?= e($anggota['tanggal_lahir']) ?>"
+        required
+    >
+    <br><br>
 
-            <option value="pria"
-                <?= $anggota['jenis_kelamin'] == 'pria' ? 'selected' : ''; ?>>
-                Pria
-            </option>
+    <label>TELPON</label><br>
+    <input
+        type="text"
+        name="telpon"
+        value="<?= e($anggota['telpon']) ?>"
+        required
+    >
+    <br><br>
 
-            <option value="wanita"
-                <?= $anggota['jenis_kelamin'] == 'wanita' ? 'selected' : ''; ?>>
-                Wanita
-            </option>
+    <label>ALAMAT</label><br>
+    <input
+        type="text"
+        name="alamat"
+        value="<?= e($anggota['alamat']) ?>"
+        required
+    >
+    <br><br>
 
-        </select>
+    <label>USERNAME LOGIN</label><br>
+    <input
+        type="text"
+        name="username"
+        value="<?= e($anggota['username']) ?>"
+        required
+    >
+    <br><br>
 
-        <br><br>
+    <label>PASSWORD LOGIN</label><br>
+    <input
+        type="password"
+        name="password"
+        value="<?= e($anggota['password']) ?>"
+        required
+    >
+    <br><br>
 
-        <label>Tempat Lahir</label>
-        <br>
+    <button type="submit" name="update">
+        Simpan Perubahan
+    </button>
 
-        <input
-            type="text"
-            name="tempat_lahir"
-            value="<?= $anggota['tempat_lahir']; ?>"
-            required
-        >
+    <a class="btn btn-light" href="tampil.anggota.php">
+        Batal
+    </a>
 
-        <br><br>
-
-        <label>Tanggal Lahir</label>
-        <br>
-
-        <input
-            type="date"
-            name="tanggal_lahir"
-            value="<?= $anggota['tanggal_lahir']; ?>"
-            required
-        >
-
-        <br><br>
-
-        <label>Telpon</label>
-        <br>
-
-        <input
-            type="text"
-            name="telpon"
-            value="<?= $anggota['telpon']; ?>"
-            required
-        >
-
-        <br><br>
-
-        <label>Alamat</label>
-        <br>
-
-        <textarea
-            name="alamat"
-            rows="5"
-            required
-        ><?= $anggota['alamat']; ?></textarea>
-
-        <br><br>
-
-        <button type="submit" name="update">
-            Simpan Perubahan
-        </button>
-
-        <a href="tampil.anggota.php">
-            Batal
-        </a>
-
-    </form>
+</form>
 
 </body>
-
 </html>

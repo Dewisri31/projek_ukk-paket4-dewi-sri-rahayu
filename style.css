@@ -1,0 +1,455 @@
+/* =========================================================
+   PERPUSTAKAAN - DISCORD UNIFIED THEME
+   Semua halaman memakai satu sistem warna, spacing, tombol,
+   tabel, form, card, badge dan responsive layout.
+   ========================================================= */
+:root{
+  --discord-blurple:#5865F2;
+  --discord-blurple-hover:#4752C4;
+  --discord-blue:#00A8FC;
+  --discord-bg:#1E1F22;
+  --discord-sidebar:#232428;
+  --discord-surface:#2B2D31;
+  --discord-surface-2:#313338;
+  --discord-surface-3:#383A40;
+  --discord-input:#1E1F22;
+  --discord-border:#3F4147;
+  --discord-text:#F2F3F5;
+  --discord-muted:#B5BAC1;
+  --discord-yellow:#F0B232;
+  --discord-red:#ED4245;
+  --discord-red-hover:#C9363A;
+  --shadow:0 12px 32px rgba(0,0,0,.28);
+  --radius:14px;
+  --radius-sm:9px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;min-height:100%}
+body{
+  font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%,rgba(88,101,242,.15),transparent 30%),
+    radial-gradient(circle at 100% 15%,rgba(0,168,252,.07),transparent 28%),
+    var(--discord-bg);
+  color:var(--discord-text);
+  padding:24px;
+  line-height:1.55;
+}
+
+/* Layout global */
+.container,
+.page-head,
+.topbar,
+.card-grid,
+.stats,
+.info,
+.success,
+.warning,
+.error,
+.table-wrap{
+  width:min(1200px,100%);
+  margin-left:auto;
+  margin-right:auto;
+}
+.container{margin-top:0}
+.page-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+.page-head>div:first-child{flex:1;min-width:220px}
+
+h1,h2,h3,h4,h5,h6{color:var(--discord-text);margin-top:0}
+h1{font-size:clamp(25px,3vw,34px);line-height:1.2;margin-bottom:6px;font-weight:800}
+h2{font-size:24px;margin-bottom:16px}
+h3{font-size:18px;margin-bottom:10px}
+p{color:var(--discord-muted);margin:8px 0;line-height:1.65}
+a{color:var(--discord-blue);text-decoration:none;font-weight:650;transition:.15s ease}
+a:hover{color:#73CFFF}
+.muted{color:var(--discord-muted)!important}
+hr{border:0;border-top:1px solid var(--discord-border);margin:24px 0}
+
+/* Topbar */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px 18px;
+  margin-bottom:24px;
+  background:rgba(43,45,49,.96);
+  border:1px solid var(--discord-border);
+  border-top:3px solid var(--discord-blurple);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  position:sticky;
+  top:12px;
+  z-index:20;
+}
+.topbar strong{font-size:19px;color:var(--discord-text)}
+.role-badge{
+  display:inline-flex;
+  align-items:center;
+  margin-left:7px;
+  padding:4px 9px;
+  border-radius:999px;
+  background:var(--discord-blurple);
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.4px;
+}
+
+/* Cards & dashboard */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin-top:18px;
+}
+.card{
+  background:var(--discord-surface);
+  border:1px solid var(--discord-border);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+  min-width:0;
+}
+.card h3{color:var(--discord-text)}
+.card p{margin-bottom:15px}
+.card a:not(.btn){
+  display:block;
+  background:var(--discord-surface-2);
+  color:var(--discord-text);
+  border:1px solid var(--discord-border);
+  border-radius:var(--radius-sm);
+  padding:10px 12px;
+  margin:7px 0;
+}
+.card a:not(.btn):hover{background:var(--discord-surface-3);color:#fff}
+.menu-icon{font-size:30px;margin-bottom:9px}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
+  margin:18px auto;
+}
+.stat{
+  position:relative;
+  overflow:hidden;
+  background:var(--discord-surface);
+  border:1px solid var(--discord-border);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:var(--shadow);
+  min-width:0;
+}
+.stat:after{
+  content:"";
+  position:absolute;
+  right:-28px;top:-28px;
+  width:90px;height:90px;
+  border-radius:50%;
+  background:rgba(88,101,242,.13);
+}
+.stat small{display:block;color:var(--discord-muted);font-weight:650;margin-bottom:6px}
+.stat strong{position:relative;z-index:1;display:block;color:var(--discord-text);font-size:27px;overflow-wrap:anywhere}
+
+/* Forms */
+form{
+  width:min(720px,100%);
+  margin:20px auto;
+  padding:24px;
+  background:var(--discord-surface);
+  border:1px solid var(--discord-border);
+  border-top:4px solid var(--discord-blurple);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+label{display:block;color:#DBDEE1;font-weight:700;margin:14px 0 7px}
+input,select,textarea{
+  width:100%;
+  padding:11px 13px;
+  border:1px solid var(--discord-border);
+  border-radius:var(--radius-sm);
+  background:var(--discord-input);
+  color:var(--discord-text);
+  font:inherit;
+  outline:none;
+  transition:.15s ease;
+}
+textarea{min-height:110px;resize:vertical}
+input::placeholder,textarea::placeholder{color:#72767D}
+input:hover,select:hover,textarea:hover{border-color:#5865F2}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--discord-blurple);
+  box-shadow:0 0 0 3px rgba(88,101,242,.2);
+}
+input[type=date]{cursor:pointer}
+
+/* Buttons: satu ukuran dan satu sistem */
+button,.btn,.btn-success,.btn-warning,.btn-danger,.btn-secondary,.btn-light{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:40px;
+  padding:9px 14px;
+  border:1px solid transparent;
+  border-radius:var(--radius-sm);
+  background:var(--discord-blurple)!important;
+  color:#fff!important;
+  cursor:pointer;
+  font:inherit;
+  font-weight:750;
+  line-height:1.2;
+  text-decoration:none!important;
+  box-shadow:none;
+  transition:background .15s ease,transform .15s ease,border-color .15s ease;
+}
+button:hover,.btn:hover,.btn-success:hover,.btn-warning:hover,.btn-danger:hover,.btn-secondary:hover,.btn-light:hover{
+  background:var(--discord-blurple-hover)!important;
+  color:#fff!important;
+  transform:translateY(-1px);
+}
+.btn-full{width:100%;margin-top:16px}
+.btn-sm{min-height:34px!important;padding:7px 10px!important;font-size:12px!important;border-radius:8px!important}
+.form-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:18px}
+.form-actions .btn,.form-actions button{width:auto}
+.back-dashboard{display:inline-flex;margin-top:12px;color:var(--discord-muted)}
+
+/* Tables */
+.table-wrap{
+  overflow-x:auto;
+  background:var(--discord-surface);
+  border:1px solid var(--discord-border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  background:var(--discord-surface);
+  color:var(--discord-text);
+  margin:20px auto;
+  border:1px solid var(--discord-border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.table-wrap table{margin:0;border:0;border-radius:0;box-shadow:none;min-width:760px}
+th{
+  background:#202225;
+  color:var(--discord-text);
+  text-align:left;
+  padding:13px 12px;
+  font-size:12px;
+  letter-spacing:.25px;
+  white-space:nowrap;
+  border-bottom:1px solid var(--discord-border);
+}
+td{
+  padding:12px;
+  color:#DBDEE1;
+  border-top:1px solid var(--discord-border);
+  vertical-align:middle;
+}
+tbody tr:nth-child(even) td{background:var(--discord-surface)}
+tbody tr:hover td{background:#32343A}
+td a:not(.btn){
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:32px;
+  padding:6px 9px;
+  margin:2px 4px 2px 0;
+  border-radius:8px;
+  background:var(--discord-surface-3);
+  color:#DBDEE1;
+  border:1px solid var(--discord-border);
+  font-size:12px;
+}
+td a:not(.btn):hover{background:#404249;color:#fff}
+.action-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:150px}
+
+/* Badge/status */
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:82px;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+}
+.badge-info{background:#243B52;color:#00A8FC}
+.badge-warning{background:#3A301C;color:#F0B232}
+.badge-success{background:#1E3328;color:#57F287}
+.badge-danger{background:#3B2022;color:#ED4245}
+
+/* Alerts */
+.info,.success,.warning,.error{
+  padding:13px 15px;
+  border-radius:var(--radius-sm);
+  border:1px solid var(--discord-border);
+  margin:14px auto;
+}
+.info{background:#202F3D;border-color:#2D5875;color:#00A8FC}
+.success{background:#1E3328;border-color:#2F7D4D;color:#57F287}
+.warning{background:#3A301C;border-color:#806525;color:#F0B232}
+.error{background:#3B2022;border-color:#813236;color:#FF7B7E}
+.empty{text-align:center;padding:34px;color:var(--discord-muted)}
+
+/* Login */
+.login-page{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 48px);padding:20px}
+.login-box{
+  width:min(440px,100%);
+  background:var(--discord-surface);
+  border:1px solid var(--discord-border);
+  border-top:4px solid var(--discord-blurple);
+  border-radius:18px;
+  padding:30px;
+  box-shadow:0 25px 65px rgba(0,0,0,.38);
+  text-align:center;
+}
+.login-icon{font-size:46px;margin-bottom:7px}
+.login-box h1{margin-bottom:3px}
+.login-box form{width:100%;border:0;padding:0;box-shadow:none;margin:20px 0 8px;text-align:left}
+
+/* Detail buku */
+.detail-card{width:min(1000px,100%);margin:0 auto}
+.book-cover-wrap{text-align:center;margin-bottom:20px}
+.book-cover{max-width:260px;max-height:340px;border-radius:12px;object-fit:cover;border:1px solid var(--discord-border);box-shadow:0 15px 35px rgba(0,0,0,.35)}
+.detail-stat strong{font-size:18px}
+
+/* Scrollbar */
+*{scrollbar-width:thin;scrollbar-color:#1A1B1E #2B2D31}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:#2B2D31}
+*::-webkit-scrollbar-thumb{background:#1A1B1E;border-radius:10px;border:2px solid #2B2D31}
+*::-webkit-scrollbar-thumb:hover{background:#111214}
+
+/* Responsive: ukuran dan posisi tetap konsisten */
+@media(max-width:800px){
+  body{padding:14px}
+  .topbar{position:static;padding:13px 14px}
+  .page-head{align-items:flex-start}
+  .page-head>.btn{width:auto}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .table-wrap{width:100%}
+  form{padding:20px}
+}
+@media(max-width:520px){
+  .topbar{align-items:flex-start;flex-direction:column}
+  .topbar>.btn{width:100%}
+  .stats{grid-template-columns:1fr}
+  .card-grid{grid-template-columns:1fr}
+  button,.btn{width:100%}
+  .form-actions .btn,.form-actions button{width:100%}
+  .action-group{flex-direction:column;align-items:stretch}
+  .action-group .btn,.action-group a{width:100%!important}
+  .login-box{padding:24px 18px}
+}
+.form-card{width:min(720px,100%);margin:20px auto}
+.action-message{width:min(650px,100%);margin:60px auto}
+.action-message h2{margin-bottom:8px}
+.section-title{margin-top:25px}
+.detail-stat{font-size:18px!important}
+
+/* Unified full-detail edit form */
+.form-section{
+  background:var(--discord-surface-2);
+  border:1px solid var(--discord-border);
+  border-radius:var(--radius);
+  padding:22px;
+  margin-bottom:16px;
+}
+.form-section h2{margin:0 0 6px;color:#fff;font-size:18px}
+.form-section>.muted{margin:0 0 18px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field-full{grid-column:1/-1}
+.field label{margin:0;font-weight:700;color:#F2F3F5}
+.field small{display:block;margin-top:-2px}
+.image-preview{display:flex;align-items:center;justify-content:center;width:150px;height:190px;background:var(--discord-input);border:1px solid var(--discord-border);border-radius:12px;overflow:hidden;margin-bottom:2px}
+.image-preview img{max-width:100%;max-height:100%;object-fit:contain}
+@media(max-width:700px){.form-grid{grid-template-columns:1fr}.field-full{grid-column:auto}.form-section{padding:16px}}
+
+
+/* =========================================================
+   GLOBAL CONSISTENCY OVERRIDES
+   Semua halaman wajib memakai komponen dari style.css ini.
+   Tidak ada warna tombol khusus per halaman.
+   ========================================================= */
+.btn,.btn-success,.btn-warning,.btn-danger,.btn-secondary,.btn-light,
+.btn-register,
+button[type="submit"]{
+  background:var(--discord-blurple)!important;
+  color:#fff!important;
+  border:1px solid transparent!important;
+}
+.btn:hover,.btn-success:hover,.btn-warning:hover,.btn-danger:hover,
+.btn-secondary:hover,.btn-light:hover,.btn-register:hover,
+button[type="submit"]:hover{
+  background:var(--discord-blurple-hover)!important;
+  color:#fff!important;
+}
+
+.form-card{
+  width:min(760px,100%);
+  margin:20px auto;
+  background:var(--discord-surface);
+  border:1px solid var(--discord-border);
+  border-top:4px solid var(--discord-blurple);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:0;
+}
+.form-card form{
+  width:100%;
+  margin:0;
+  padding:24px;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;margin:0 0 7px;font-weight:700;color:#DBDEE1}
+.form-group input,.form-group select,.form-group textarea{width:100%}
+.form-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:18px}
+
+.register-box{
+  width:min(720px,100%);
+  margin:20px auto;
+  background:var(--discord-surface);
+  border:1px solid var(--discord-border);
+  border-top:4px solid var(--discord-blurple);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:24px;
+}
+.register-head{margin:0 0 20px}
+.register-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.register-grid .full{grid-column:1/-1}
+.register-box form{width:100%;margin:0;padding:0;background:transparent;border:0;box-shadow:none}
+.register-box .hint{font-size:12px;color:var(--discord-muted);margin-top:5px}
+.login-register-link{margin-top:14px}
+.login-success{margin-top:14px}
+.denda-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:18px 0;flex-wrap:wrap}
+.badge-role{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;background:var(--discord-surface-2);border:1px solid var(--discord-border);color:var(--discord-muted);font-size:12px;font-weight:750}
+.aksi{display:flex;gap:7px;flex-wrap:wrap}
+.money{font-size:15px;color:var(--discord-text);font-weight:750}
+
+@media(max-width:650px){
+  .register-grid{grid-template-columns:1fr}
+  .register-grid .full{grid-column:auto}
+  .register-box{padding:20px}
+}
