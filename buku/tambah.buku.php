@@ -52,7 +52,7 @@ if ($sinopsis === '') {
 |--------------------------------------------------------------------------
 | 4. Ambil akun pengelola yang login
 |--------------------------------------------------------------------------
-| Mengikuti session dari login.php:
+| Mengikuti session dari index.php:
 | Admin   : id_admin
 | Petugas : id_petugas
 |

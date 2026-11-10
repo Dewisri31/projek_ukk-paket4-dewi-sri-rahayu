@@ -1,6 +1,6 @@
 <?php
 require_once '../auth.php';
-require_detail_petugas();
+require_detail_admin();
 require_once '../connection.php';
 
 $id_detail = (int)($_GET['id_detail'] ?? 0);

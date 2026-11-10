@@ -1,7 +1,6 @@
 <?php
-require_once '../auth.php'; require_detail_petugas();
-?>
-<?php
+require_once '../auth.php';
+require_detail_admin();
 
 // Menghubungkan ke database
 include("../connection.php");
@@ -66,7 +65,7 @@ $query_penerbit = $conn->query("
 
             <?php while ($buku = $query_buku->fetch_assoc()) { ?>
 
-                <option value="<?= $buku['id_buku']; ?>">
+                <option value="<?= (int)$buku['id_buku']; ?>" <?= ((int)($_GET['id_buku'] ?? 0) === (int)$buku['id_buku']) ? 'selected' : ''; ?>>
 
                     <?= $buku['judul']; ?>
 

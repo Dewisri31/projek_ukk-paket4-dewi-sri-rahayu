@@ -76,6 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $error = 'Jenis kelamin tidak valid.';
 
+    } elseif (
+        !preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', $tgl) ||
+        !checkdate((int)substr($tgl, 5, 2), (int)substr($tgl, 8, 2), (int)substr($tgl, 0, 4)) ||
+        $tgl > '2011-12-31'
+    ) {
+
+        $error = 'Tanggal lahir maksimal 31 Desember 2011.';
+
     } elseif ($password !== $password2) {
 
         $error = 'Konfirmasi password tidak sama.';
@@ -515,6 +523,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input
                         type="date"
                         name="tanggal_lahir"
+                        max="2011-12-31"
                         value="<?= htmlspecialchars(
                             $_POST['tanggal_lahir'] ?? '',
                             ENT_QUOTES,
@@ -590,7 +599,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <a
                 class="btn btn-light"
-                href="login.php"
+                href="index.php"
             >
                 Sudah punya akun? Login
             </a>

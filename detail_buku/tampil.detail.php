@@ -64,12 +64,17 @@ $result = $query->fetch_all(MYSQLI_ASSOC);
 <div class="page-head"><div></div><a class="btn btn-light" href="../dashboard.<?= $_SESSION['role'] ?>.php">← Kembali ke Dashboard</a></div>
 
     <h1>DETAIL BUKU</h1>
-    <p class="muted">Admin dan Petugas dapat melakukan CRUD detail buku.</p>
+    <p class="muted">Admin dapat mengelola detail buku. Petugas hanya memiliki akses melihat data.</p>
+    <?php if (isset($_GET['updated'])): ?>
+        <div class="success">Detail buku berhasil diperbarui.</div>
+    <?php endif; ?>
     <?php if (isset($_GET['pesan'])): ?>
         <div class="success"><?= htmlspecialchars($_GET['pesan']) ?></div>
     <?php endif; ?>
 
-    <a class="btn" href="form.detail.php">+ Tambah Detail Buku</a>
+    <?php if (role() === 'admin'): ?>
+        <a class="btn" href="form.detail.php">+ Tambah Detail Buku</a>
+    <?php endif; ?>
 
     <br><br>
 
@@ -142,20 +147,13 @@ $result = $query->fetch_all(MYSQLI_ASSOC);
                     </td>
 
                     <td>
-
-                        <a href="edit.detail.php?id_detail=<?= $d['id_detail']; ?>">
-                            Edit
-                        </a>
-
-                        |
-
-                        <a
-                            href="hapus.detail.php?id_detail=<?= $d['id_detail']; ?>"
-                            onclick="return confirm('Yakin ingin menghapus data ini?')"
-                        >
-                            Hapus
-                        </a>
-
+                        <?php if (role() === 'admin'): ?>
+                            <a class="btn btn-sm" href="edit.detail.php?id_detail=<?= (int)$d['id_detail']; ?>" style="display:inline-block;margin:2px 4px 2px 0;">✏ Edit Detail</a>
+                            <a class="btn btn-sm btn-danger" href="hapus.detail.php?id_detail=<?= (int)$d['id_detail']; ?>"
+                               onclick="return confirm('Yakin ingin menghapus detail buku ini?')">Hapus</a>
+                        <?php else: ?>
+                            <span class="muted">Hanya lihat</span>
+                        <?php endif; ?>
                     </td>
 
                 </tr>

@@ -14,7 +14,7 @@ $is_anggota = ($role === 'anggota');
 $id_anggota = (int)($_SESSION['id_anggota'] ?? 0);
 
 if ($is_anggota && $id_anggota <= 0) {
-    go_home('login.php');
+    go_home('index.php');
 }
 
 /*

@@ -1,6 +1,6 @@
 <?php
 require_once '../auth.php';
-require_detail_petugas();
+require_detail_admin();
 require_once '../connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: form.detail.php'); exit; }

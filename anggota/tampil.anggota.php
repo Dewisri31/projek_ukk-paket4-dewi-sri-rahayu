@@ -42,6 +42,19 @@ $result = $query->fetch_all(MYSQLI_ASSOC);
 
     <h1>DATA ANGGOTA</h1>
 
+    <?php if (($_GET['hapus'] ?? '') === 'terkait'): ?>
+        <div class="error action-message">
+            Anggota tidak dapat dihapus karena sudah memiliki riwayat peminjaman.
+            Data dipertahankan agar histori transaksi dan relasi database tetap aman.
+        </div>
+    <?php elseif (($_GET['hapus'] ?? '') === 'berhasil'): ?>
+        <div class="success action-message">Data anggota berhasil dihapus.</div>
+    <?php elseif (($_GET['hapus'] ?? '') === 'gagal'): ?>
+        <div class="error action-message">Penghapusan gagal. Silakan periksa relasi data anggota.</div>
+    <?php elseif (($_GET['hapus'] ?? '') === 'invalid'): ?>
+        <div class="error action-message">ID anggota tidak valid.</div>
+    <?php endif; ?>
+
     <a href="form.anggota.html">
         + Tambah Data
     </a>

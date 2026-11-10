@@ -394,35 +394,19 @@ $role =
         <?php endif; ?>
 
 
-        <?php if (
-            $role === 'admin' ||
-            $role === 'petugas'
-        ): ?>
-
-
-            <?php if (
-                !empty($b['id_detail'])
-            ): ?>
-
-                <a
-                    class="btn"
-                    href="../detail_buku/edit.detail.php?id_detail=<?= (int) $b['id_detail']; ?>"
-                >
-                    ✏ Edit Semua Data
+        <?php if ($role === 'admin'): ?>
+            <?php if (!empty($b['id_detail'])): ?>
+                <a class="btn" href="../detail_buku/edit.detail.php?id_detail=<?= (int)$b['id_detail']; ?>">
+                    ✏ Edit Detail Buku
                 </a>
-
             <?php else: ?>
-
-                <a
-                    class="btn"
-                    href="edit.buku.php?id_buku=<?= (int) $b['id_buku']; ?>"
-                >
-                    ✏ Edit Buku
+                <a class="btn" href="../detail_buku/form.detail.php?id_buku=<?= (int)$b['id_buku']; ?>">
+                    + Tambah Detail Buku
                 </a>
-
             <?php endif; ?>
-
-
+            <a class="btn btn-light" href="edit.buku.php?id_buku=<?= (int)$b['id_buku']; ?>">
+                Edit Informasi Buku
+            </a>
         <?php endif; ?>
 
 

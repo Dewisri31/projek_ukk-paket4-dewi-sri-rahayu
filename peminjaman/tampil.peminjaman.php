@@ -22,7 +22,7 @@ $role = $_SESSION['role'] ?? '';
 |--------------------------------------------------------------------------
 */
 if (!in_array($role, ['admin', 'petugas', 'anggota'], true)) {
-    go_home('login.php');
+    go_home('index.php');
 }
 
 

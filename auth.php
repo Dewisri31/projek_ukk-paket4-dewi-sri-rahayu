@@ -11,7 +11,7 @@ function go_home(string $file): void {
 
 function require_login(): void {
     if (empty($_SESSION['login'])) {
-        go_home('login.php');
+        go_home('index.php');
     }
 }
 
@@ -26,7 +26,7 @@ function dashboard_file(): string {
         'admin' => 'dashboard.admin.php',
         'petugas' => 'dashboard.petugas.php',
         'anggota' => 'dashboard.anggota.php',
-        default => 'login.php'
+        default => 'index.php'
     };
 }
 
@@ -60,8 +60,14 @@ function require_master_staff(): void {
     }
 }
 
+// Halaman daftar detail buku dapat dilihat Admin dan Petugas.
 function require_detail_petugas(): void {
-    require_petugas();
+    require_master_staff();
+}
+
+// Pengelolaan detail buku (tambah, edit, hapus) khusus Admin.
+function require_detail_admin(): void {
+    require_admin();
 }
 
 // Alias lama agar file yang belum diubah tetap aman.
